@@ -1,0 +1,12 @@
+requirement_id,system,owner,user_story,test_case,link_type
+REQ-001,Onboarding Portal,Digital Experience,US-001,TC-001,verified
+REQ-002,Notification Service,Communications Team,US-002,TC-002,verified
+REQ-003,Identity Verification Gateway,Identity Operations,US-003,TC-003,verified
+REQ-003,Onboarding Portal,Digital Experience,US-003,TC-013,verified
+REQ-004,Consent Service,Privacy Operations,US-004,TC-004,verified
+REQ-005,Risk Decision Engine,Risk Operations,US-005,TC-005,verified
+REQ-006,Onboarding Portal,Security Operations,US-006,TC-006,verified
+REQ-007,Audit Event Store,Data Governance,US-007,TC-007,verified
+REQ-008,Identity Verification Gateway,Platform Engineering,US-008,TC-008,verified
+REQ-009,Operations Queue,Operations Team,US-009,TC-009,verified
+REQ-010,Notification Service,Communications Team,US-010,TC-010,verified
