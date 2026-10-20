@@ -1,172 +1,111 @@
-# 🧭 ChangePilot — Requirements Intelligence & Change Impact Analysis
+# 🧭 ChangePilot
+### Requirements intelligence • change-impact analysis • evidence-driven handoff
 
-**A working, local-first business analysis portfolio application** for comparing requirements across versions, showing traceability to systems and tests, retrieving source evidence, and documenting human review decisions.
+[**Launch the interactive demo ↗**](https://changepilot-app.streamlit.app/) · [Architecture](docs/ARCHITECTURE.md) · [Project brief](docs/PROJECT_BRIEF.md) · [Deployment](docs/DEPLOYMENT.md)
 
-**[Try the ChangePilot Streamlit demo](https://changepilot-app.streamlit.app/)** · [Source code](https://github.com/dishap12/ChangePilot) · [Deployment guide](docs/DEPLOYMENT.md)
+[![GitHub Actions](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml/badge.svg)](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml)
 
-[![ChangePilot checks](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml/badge.svg)](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml) · [CI results](https://github.com/dishap12/ChangePilot/actions)
+**A Business Analysis portfolio application** built with Python, Streamlit, Plotly, scikit-learn, SQLite, and optional OpenAI APIs. Compare revisions, visualize verified impacts, research requirements, and draft human-reviewable change artifacts.
 
-> **Portfolio demo, not a bank product.** All included onboarding rules, teams, user stories and test cases are synthetic. Do not upload confidential employer materials.
+> This is a **synthetic retail-banking portfolio demonstration**, not a banking product. The hosted build is restricted to fictional inputs and disables uploads, AI calls and review writes.
 
-## The business problem
-Changes in onboarding requirements frequently affect systems, acceptance criteria, tests and business owners. Analysts need a reproducible way to discover changes and identify known dependencies without pretending unverified links are facts.
+## Features
 
-## Key features
-
-| Feature | Implementation | Evidence |
+| Feature | Value | Important limitation |
 |---|---|---|
-| Version comparison | Stable `REQ-###` ID matching + text comparison | Added / modified / removed / unchanged |
-| Traceability | Verified CSV lookups | System, owner, user story, test case |
-| Change triage | Explicit rules for sensitive terms and unmapped requirements | Review priority + explanation |
-| Requirements Q&A | Local TF-IDF retrieval with numbered sources | No AI account required |
-| Optional RAG generation | OpenAI Responses API over retrieved excerpts | Cited draft; analyst validates |
-| Draft change tickets | Deterministic template from source requirements and CSV links | Downloadable Markdown checklist |
-| Human review | SQLite decision log | Reviewer, UTC timestamp, action, note |
-| Exports | Markdown and CSV | Shareable draft change pack |
-| Evaluation | Unit tests + curated benchmark | Reproducible, limited metrics |
+| **Command center** | KPI tiles, interactive change mix, triage queue, gap coverage | Priority is a transparent keyword/link heuristic |
+| **Version comparison** | Word-highlighted before/after view with filters | Stable REQ identifiers are the comparison basis |
+| **Potential ID-renames** | Character TF-IDF + edit similarity flags candidate removed/added pairs | Proposals are unverified and never automatically reconciled |
+| **Dependency explorer** | Interactive Sankey connecting requirements to mapped systems, owners and tests | Only explicitly provided CSV links appear |
+| **Evidence search** | Source-cited offline TF-IDF retrieval | Lexical retrieval is not a neural semantic model |
+| **Optional semantic retrieval** | OpenAI embedding ranking in local mode only | Requires explicit API opt-in, data transfer and possible charges |
+| **Optional AI explanations** | Source-constrained, cited draft answers in local mode | Must be verified by a human |
+| **Extraction studio** | Modal-language candidates from a freeform brief, with line provenance | Manual ID assignment and human review required |
+| **Story & acceptance drafts** | Proposed user stories, boundary discussion prompts, change tickets | Not approved or executable acceptance tests |
+| **Export and review** | Markdown/CSV review pack; local-only SQLite signoff log | Public mode has no shared review writes |
 
-## Quick start (Mac / Windows / Linux)
+## A five-minute demo
 
-You **do not need GitHub, a paid API, or a database server** to run the baseline app.
+The [live hosted version](https://changepilot-app.streamlit.app/) uses fictional retail banking onboarding requirements.
 
-1. Install Python 3.10+ from https://www.python.org/downloads/ and open Terminal (Mac) or PowerShell (Windows).
-2. Clone this repository and open its folder:
+1. **Command center** — inspect 2 added, 5 modified, and 1 removed requirement; locate the 2 traceability gaps.
+2. **Compare versions** — open REQ-005 to see risk-rule wording changes highlighted.
+3. **Impact map** — select REQ-005 to visualize the Risk Decision Engine, mapped owner and tests. Then select unmapped REQ-012.
+4. **Intelligence lab** — ask about identity verification, explore the source evidence, generate a freeform extraction worksheet, and review a source-backed acceptance-criteria draft.
+5. **Review & handoff** — export the impact assessment and change inventory. Review logging is **disabled** in the hosted public demo.
 
-```bash
+There are no fabricated screenshots or claimed production metrics. Real screenshots and a video walkthrough can be added after visual verification.
+
+## Run it locally
+
+**Use Python 3.11 or 3.12.**
+
+~~~bash
 git clone https://github.com/dishap12/ChangePilot.git
 cd ChangePilot
-```
-
-Or download **Code → Download ZIP** from GitHub, unzip it, and enter the repository folder.
-3. Create and activate a virtual environment:
-
-**Mac / Linux**
-
-```bash
 python3 -m venv .venv
 source .venv/bin/activate
-```
-
-**Windows PowerShell**
-
-```powershell
-py -m venv .venv
-.venv\Scripts\Activate.ps1
-```
-
-4. Install dependencies and start the app:
-
-```bash
 python -m pip install -r requirements.txt
 python -m streamlit run app.py
-```
+~~~
 
-Open the local URL shown in the terminal (typically `http://localhost:8501`). The **fictional sample data** loads automatically.
+On Windows PowerShell, create your environment with py -m venv .venv and activate with .venv\Scripts\Activate.ps1.
 
-## Five-minute recruiter demo
+Local comparison, impact maps, evidence search, extraction and exports work without an API key. For *optional* LLM answers and embeddings, copy .env.example to an untracked local .env and provide your own OPENAI_API_KEY. Do not upload private work documents or credentials.
 
-1. **Overview:** See 2 new, 5 modified, 1 removed and 4 unchanged onboarding requirements.
-2. **Compare versions:** Inspect REQ-005, which changes the hypothetical review threshold from 80 to 65.
-3. **Impact analyzer:** See Risk Decision Engine, its mapped owner and test case. Download a draft change ticket. Review REQ-012 to see a new requirement with *missing links*, not invented impact.
-4. **Ask requirements:** Search `Which requirements mention identity verification and selfie checks?` and inspect retrieved IDs. Works fully offline.
-5. **Review log:** The hosted public demo is read-only: review logging and user uploads are disabled. For the full local demo, record a decision in the review log.
+### Input format
 
-## Optional AI generation
+Supported local documents: TXT, Markdown, text-based PDF and DOCX. The deterministic parser requires one stable-ID requirement per line:
 
-The search/retrieval and other workflows run for free locally, **without a language model**. To add AI-generated explanations grounded in retrieved requirements:
+~~~text
+REQ-001 | The system shall log the customer's consent version.
+REQ-002 | The system must apply the risk team's approved review threshold.
+~~~
 
-```bash
-cp .env.example .env
-```
+Traceability links can be supplied in a CSV with columns:
 
-On Windows, copy the file manually if needed. Open `.env` and set `OPENAI_API_KEY=...`. Do not commit `.env`, and do not paste the key into your README. Set `OPENAI_MODEL` to a model supported by your API account (default in example: `gpt-4.1-mini`). In the app's **Ask requirements** tab, check the optional AI box and click **Search requirements**.
-
-AI calls are metered by the provider and can be wrong even with citations. The app checks that cited IDs were retrieved, but it does **not** guarantee the wording is accurate. Do not treat its response as an approved business requirement.
-
-## File format for your own documents
-
-Upload `.md`, `.txt`, text-based `.pdf`, or `.docx` files using one requirement per line:
-
-```text
-REQ-001 | The system shall notify the applicant of a final decision.
-REQ-002 | Audit events shall be retained for 90 days.
-```
-
-Stable IDs are important. This MVP does not automatically identify freeform requirements in unstructured documents, convert scanned PDFs, or match renamed IDs.
-
-For your own links, upload a CSV with the same columns as `data/traceability.csv`:
-
-```text
+~~~text
 requirement_id,system,owner,user_story,test_case,link_type
-REQ-001,Notifications,Customer Ops,US-001,TC-001,verified
-```
+~~~
 
-## Run tests and evaluate
+Freeform extraction is an **unverified worksheet**, not an automatic replacement for an approved baseline.
 
-```bash
+## High-level architecture
+
+~~~mermaid
+flowchart LR
+  A[Baseline and revised requirements] --> B[Deterministic ID diff]
+  B --> C[Change queue]
+  C --> D[Suggested rename review]
+  T[Verified traceability CSV] --> E[System and test impact map]
+  C --> E
+  C --> F[Change ticket and acceptance drafts]
+  A --> G[Local evidence retrieval]
+  G --> H[Optional embeddings and LLM locally]
+  X[Freeform brief] --> Y[Unverified candidate extraction]
+  E --> Z[Export and analyst signoff]
+~~~
+
+Read [architecture and safety decisions](docs/ARCHITECTURE.md) for a full technical description.
+
+## Testing
+
+GitHub Actions runs on Python **3.11 and 3.12**, exercising module tests, Streamlit start-up (including forced safe public mode), the curated synthetic benchmark, and syntax checks.
+
+~~~bash
 python -m pytest -q
 python scripts/evaluate.py
-```
+~~~
 
-The benchmark uses curated questions on a tiny **synthetic** dataset; it is a functionality check, not evidence of production accuracy.
+The small benchmark checks 12 hand-labeled change outcomes and Recall@3 on 7 deliberately selected synthetic questions. Those figures demonstrate reproducible functionality, **not** independent real-world precision or LLM accuracy.
 
-## GitHub checks and a safe public demo
+## Safety, tradeoffs and roadmap
 
-The [GitHub Actions workflow](.github/workflows/tests.yml) runs automated tests, the small synthetic benchmark, and syntax checks on pushes to `main` and pull requests across Python 3.11 and 3.12.
+- Use **public_demo.py** as the Streamlit Community Cloud entry point. It forces read-only fictional-data mode. Do not deploy unrestricted app.py publicly.
+- No real authentication, tenant isolation, or secure review data storage; SQLite is local-only. No claim of production or compliance readiness.
+- Stable requirement IDs are the only verified version links. Candidate renames, extraction results and acceptance scenarios remain drafts.
+- Supplied CSV links can be incomplete or outdated; unmapped does not mean unaffected.
+- Neural semantic retrieval and AI answers are optional *local* API workflows, disabled in the public demo.
+- Future priorities: editable versioned traceability, broader independent benchmarks, reviewer-confirmed complex-document extraction, authenticated workspaces, and a real screen-recorded walkthrough.
 
-For a shareable **read-only fictional-data demo**, deploy **`public_demo.py`** as the Streamlit Community Cloud main file (not the local `app.py`). It forces safe demo mode and disables uploads, AI API calls, and SQLite review logging. No hosting secrets are required. Local `app.py` still offers the complete feature set. The [Streamlit demo URL](https://changepilot-app.streamlit.app/) was supplied by the project owner; confirm it opens and displays **Public demo** before sharing. Hosting availability has not been independently verified in this README. The app is not production-secure. Follow the [deployment guide](docs/DEPLOYMENT.md).
-
-Do not commit `.env` or `.streamlit/secrets.toml`. The `.gitignore` file only protects future commits; it cannot erase previously committed secrets.
-
-## Repo layout
-
-```text
-ChangePilot/
-├── app.py                       # Streamlit interface
-├── requirements.txt
-├── public_demo.py                # Restricted entrypoint for public Streamlit hosting
-├── .env.example                  # Example local configuration (no credentials)
-├── .gitignore                    # Ignore private keys, local files, virtualenvs
-├── .streamlit/config.toml        # Local UI and upload-size configuration
-├── .github/workflows/tests.yml   # CI tests on GitHub
-├── data/                        # Synthetic sample requirements & verified links
-│   ├── onboarding_v1.md
-│   ├── onboarding_v2.md
-│   └── traceability.csv
-├── src/changepilot/             # Parsing, comparison, traceability, retrieval, AI, audit, reports
-├── tests/                       # Unit tests
-├── scripts/evaluate.py          # Transparent demo benchmark
-├── docs/ARCHITECTURE.md         # Data flow, design decisions, production gaps
-├── docs/DEPLOYMENT.md           # Local use, public-demo safety, deployment steps
-└── docs/PROJECT_BRIEF.md        # Stakeholders, acceptance criteria, demo walkthrough
-```
-
-## Engineering tradeoffs and limitations
-
-- **No secret AI dependency:** All non-LLM functionality works offline using scikit-learn.
-- **No pretend semantic engine:** TF-IDF is lexical retrieval, not embeddings or a neural search index.
-- **No invented links:** Traceability is verified only relative to the supplied demo mapping; new requirements create review gaps.
-- **No enterprise compliance assertion:** The tool does not determine regulatory adequacy or operational risk.
-- **Not secure for public multi-user use:** Local SQLite reviews are unauthenticated. Do not host it with real user or organizational data.
-- **Not all Word/PDF layouts parse:** Requirement lines must retain `REQ-### | ...` structure.
-
-## Next roadmap milestones
-
-- [ ] Semantic retrieval and retrieval quality evaluation against a separate benchmark
-- [ ] Human-reviewed extraction of requirements from freeform docs
-- [ ] Versioned requirements-to-test graph with transitive impact
-- [ ] AI-assisted user stories and *specific*, testable acceptance criteria with source citations (current ticket template is a human-review checklist)
-- [ ] Integration with a fictional issue tracker API
-- [ ] Authenticated review workflows, access control, data retention settings
-- [ ] UI screenshots and a 90-second public demo video
-
-## Interview framing
-
-**Problem:** Coordinating onboarding requirement changes across business and engineering teams is time-consuming and error-prone.
-
-**Approach:** Built a Python + Streamlit application that compares stable requirement IDs, traces verified linked systems and test cases, and retrieves cited supporting evidence. Added optional LLM explanations and a human-review audit trail.
-
-**Result:** Demonstrated reproducible change identification and an auditable draft report on fictional test cases. The synthetic benchmark measures functional correctness; real-world validation and production safeguards are future work.
-
-## License
-MIT — see `LICENSE`.
+[MIT license](LICENSE) · [Deployment guide](docs/DEPLOYMENT.md) · [Business analyst project brief](docs/PROJECT_BRIEF.md)
