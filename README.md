@@ -2,6 +2,8 @@
 
 **A working, local-first business analysis portfolio application** for comparing requirements across versions, showing traceability to systems and tests, retrieving source evidence, and documenting human review decisions.
 
+**[Try the ChangePilot Streamlit demo](https://changepilot-app.streamlit.app/)** · [Source code](https://github.com/dishap12/ChangePilot) · [Deployment guide](docs/DEPLOYMENT.md)
+
 [![ChangePilot checks](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml/badge.svg)](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml) · [CI results](https://github.com/dishap12/ChangePilot/actions) · [Deployment guide](docs/DEPLOYMENT.md)
 
 > **Portfolio demo, not a bank product.** All included onboarding rules, teams, user stories and test cases are synthetic. Do not upload confidential employer materials.
@@ -67,7 +69,7 @@ Open the local URL shown in the terminal (typically `http://localhost:8501`). Th
 2. **Compare versions:** Inspect REQ-005, which changes the hypothetical review threshold from 80 to 65.
 3. **Impact analyzer:** See Risk Decision Engine, its mapped owner and test case. Download a draft change ticket. Review REQ-012 to see a new requirement with *missing links*, not invented impact.
 4. **Ask requirements:** Search `Which requirements mention identity verification and selfie checks?` and inspect retrieved IDs. Works fully offline.
-5. **Review log:** Record a decision, then export Markdown and CSV summaries.
+5. **Review log:** The hosted public demo is read-only: review logging and user uploads are disabled. For the full local demo, record a decision in the review log.
 
 ## Optional AI generation
 
@@ -112,7 +114,7 @@ The benchmark uses curated questions on a tiny **synthetic** dataset; it is a fu
 
 The [GitHub Actions workflow](.github/workflows/tests.yml) runs automated tests, the small synthetic benchmark, and syntax checks on pushes to `main` and pull requests across Python 3.11 and 3.12.
 
-For a shareable **read-only fictional-data demo**, deploy **`public_demo.py`** as the Streamlit Community Cloud main file (not the local `app.py`). It forces safe demo mode and disables uploads, AI API calls, and SQLite review logging. No hosting secrets are required. Local `app.py` still offers the complete feature set. The app is **not deployed automatically** and is not production-secure. Follow the [deployment guide](docs/DEPLOYMENT.md) and verify it before sharing a live URL.
+For a shareable **read-only fictional-data demo**, deploy **`public_demo.py`** as the Streamlit Community Cloud main file (not the local `app.py`). It forces safe demo mode and disables uploads, AI API calls, and SQLite review logging. No hosting secrets are required. Local `app.py` still offers the complete feature set. The [Streamlit demo URL](https://changepilot-app.streamlit.app/) was supplied by the project owner; confirm it opens and displays **Public demo** before sharing. Hosting availability has not been independently verified in this README. The app is not production-secure. Follow the [deployment guide](docs/DEPLOYMENT.md).
 
 Do not commit `.env` or `.streamlit/secrets.toml`. The `.gitignore` file only protects future commits; it cannot erase previously committed secrets.
 
