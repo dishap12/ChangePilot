@@ -22,3 +22,14 @@ def test_app_starts_and_applies_demo_restrictions(monkeypatch, public_demo):
         assert any("Public demo" in item.value for item in app.success)
     else:
         assert len(app.file_uploader) == 3
+
+
+def test_public_streamlit_entrypoint_forces_safe_mode(monkeypatch):
+    """Hosting public_demo.py must disable uploads even if env says otherwise."""
+    monkeypatch.setenv("CHANGEPILOT_PUBLIC_DEMO", "false")
+    hosted = APP.with_name("public_demo.py")
+    app = AppTest.from_file(str(hosted), default_timeout=30).run()
+    assert not app.exception, [str(exc.message) for exc in app.exception]
+    assert len(app.metric) >= 4
+    assert len(app.file_uploader) == 0
+    assert any("Public demo" in item.value for item in app.success)
