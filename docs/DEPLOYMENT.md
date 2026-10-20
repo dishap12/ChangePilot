@@ -24,7 +24,7 @@ Optional, local-only LLM explanation: copy `.env.example` to `.env`, add your ow
 
 ## Before hosting a public demo
 
-Set **`CHANGEPILOT_PUBLIC_DEMO=true`** in the deployed app's root-level secrets or environment variables. This switches the UI into a **read-only fictional-data demo**:
+**Use `public_demo.py` as the deployed app's entrypoint.** It forces `CHANGEPILOT_PUBLIC_DEMO=true` before running the application, without needing an API key or a hosting secret. This switches the UI into a **read-only fictional-data demo**:
 
 - Only the checked-in sample documents and traceability CSV can be used.
 - File uploads are not offered.
@@ -32,7 +32,7 @@ Set **`CHANGEPILOT_PUBLIC_DEMO=true`** in the deployed app's root-level secrets 
 - Reviewer names and decisions are neither collected nor written to SQLite.
 - The comparison, impact analysis, requirement retrieval, and downloadable draft reports still work with fictional content.
 
-The default value is **false**, so do not publish a reachable app without configuring public demo mode. This is a safety precaution, **not** a claim of production-grade security. Review the app yourself after deploying.
+The local `app.py` defaults to full local mode; **do not deploy `app.py` publicly**. Deploy only `public_demo.py` to enable the safe subset by default. This is a safety precaution, **not** a claim of production-grade security. Review the app yourself after deploying.
 
 ## Deploy using Streamlit Community Cloud
 
@@ -42,15 +42,9 @@ The default value is **false**, so do not publish a reachable app without config
 4. Choose **Create app** / **Deploy an app** from GitHub and specify:
    - Repository: `dishap12/ChangePilot`
    - Branch: `main`
-   - Main file path: `app.py`
+   - Main file path: `public_demo.py`
    - Python version: `3.11` or `3.12`
-5. In **Advanced settings → Secrets**, add this root-level TOML value (do **not** put it in the repository):
-
-```toml
-CHANGEPILOT_PUBLIC_DEMO = "true"
-```
-
-Do **not** add an OpenAI API key to a public deployment. Streamlit makes root-level secrets available as environment variables.
+5. No secrets or API keys are needed for `public_demo.py`. Keep the hosting Secrets field empty, and do not configure OpenAI API credentials on a public demo.
 
 6. Deploy, open the generated app URL, and verify that the sidebar says **Public demo**. If uploads or review forms are visible, unpublish the app and check the secret setting before sharing.
 7. Smoke-test these tabs: Overview (sample KPIs), Compare (REQ-005), Impact analyzer (REQ-005 mapped, REQ-012 missing links), Ask requirements (local retrieval), Review log (disabled), and report downloads.
@@ -69,7 +63,7 @@ View results at [ChangePilot Actions](https://github.com/dishap12/ChangePilot/ac
 - **App fails to start:** Verify you're in the repository root and installed `requirements.txt` in an activated virtual environment.
 - **No document requirements recognized:** This MVP needs lines formatted as `REQ-001 | The system shall ...`; scanned PDFs and arbitrary business documents are not automatically converted.
 - **No AI answer:** Offline retrieval still works. AI generation requires an API key locally and explicit opt-in.
-- **A public demo still allows uploads:** Check that the root-level secret is exactly `CHANGEPILOT_PUBLIC_DEMO = "true"`, save it in Streamlit settings, then restart/redeploy.
+- **A public demo still allows uploads:** Verify the deployed main file path is `public_demo.py` (not `app.py`) and redeploy. Never publish the unrestricted local entrypoint.
 - **SQLite audit log missing:** Public demo deliberately disables it; local mode creates `.local/reviews.db` when needed.
 
 ## What this demo does not prove
