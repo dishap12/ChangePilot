@@ -22,6 +22,7 @@ from changepilot.reports import report_markdown, change_csv, summary_counts
 from changepilot.tickets import draft_change_ticket
 
 load_dotenv(ROOT / ".env")
+PUBLIC_DEMO = os.getenv("CHANGEPILOT_PUBLIC_DEMO", "false").strip().lower() in {"1", "true", "yes"}
 st.set_page_config(page_title="ChangePilot | Requirements Intelligence", page_icon="🧭", layout="wide")
 st.markdown("""<style>
 .block-container {padding-top: 1.5rem; max-width: 1250px}
@@ -44,16 +45,24 @@ with st.sidebar:
     st.markdown("## 🧭 ChangePilot")
     st.caption("Requirements Intelligence · Portfolio MVP v0.1")
     st.markdown("### Workspace inputs")
-    st.caption("Upload both document versions, or use the fictional banking demo.")
-    upload_old = st.file_uploader("Baseline requirements", type=["md", "txt", "pdf", "docx"], key="old")
-    upload_new = st.file_uploader("Revised requirements", type=["md", "txt", "pdf", "docx"], key="new")
-    upload_csv = st.file_uploader("Traceability links (optional CSV)", type=["csv"])
-    st.markdown("### AI mode (optional)")
-    api_key = st.text_input("API key (session only)", type="password", value=os.getenv("OPENAI_API_KEY", ""),
-                            help="Never commit your key. Only retrieved snippets are sent when AI generation is requested.")
-    model = st.text_input("Model name", value=os.getenv("OPENAI_MODEL", "gpt-4.1-mini"))
-    st.info("Local retrieval works without an API key. AI answers require an OpenAI API key and may incur charges.")
-    st.warning("Use fictional or approved public materials only. This demo has no authentication or tenant isolation.")
+    if PUBLIC_DEMO:
+        # Public hosting exposes a read-only, synthetic-data-only demonstration.
+        # Disallow arbitrary uploads, shared SQLite review state, and API calls.
+        upload_old = upload_new = upload_csv = None
+        api_key = ""
+        model = ""
+        st.success("Public demo: fictional sample data only. Uploads, AI calls, and review writes are disabled.")
+    else:
+        st.caption("Upload both document versions, or use the fictional banking demo.")
+        upload_old = st.file_uploader("Baseline requirements", type=["md", "txt", "pdf", "docx"], key="old")
+        upload_new = st.file_uploader("Revised requirements", type=["md", "txt", "pdf", "docx"], key="new")
+        upload_csv = st.file_uploader("Traceability links (optional CSV)", type=["csv"])
+        st.markdown("### AI mode (optional)")
+        api_key = st.text_input("API key (session only)", type="password", value=os.getenv("OPENAI_API_KEY", ""),
+                                help="Never commit your key. Only retrieved snippets are sent when AI generation is requested.")
+        model = st.text_input("Model name", value=os.getenv("OPENAI_MODEL", "gpt-4.1-mini"))
+        st.info("Local retrieval works without an API key. AI answers require an OpenAI API key and may incur charges.")
+        st.warning("Use fictional or approved public materials only. This demo has no authentication or tenant isolation.")
 
 st.title("ChangePilot")
 st.markdown("**From changing requirements to reviewable system impact.** Compare versions, inspect verified dependencies, and explore source-grounded answers.")
@@ -148,25 +157,29 @@ with impact_tab:
             st.markdown(draft_change_ticket(item, links))
         st.download_button("Download draft change ticket (.md)", draft_change_ticket(item, links),
                            file_name=f"{item.id.lower()}-draft-ticket.md", mime="text/markdown")
-        st.markdown("#### Draft review decision (local-only audit log)")
-        with st.form("review_form"):
-            reviewer = st.text_input("Reviewer name", placeholder="e.g. Demo Analyst")
-            decision = st.selectbox("Action", sorted(ACTIONS))
-            note = st.text_area("Reason / follow-up", placeholder="What evidence or clarification is required?")
-            submitted = st.form_submit_button("Record review decision")
-        if submitted:
-            try:
-                add_decision(ROOT / ".local" / "reviews.db", item.id, decision, reviewer, note, workspace_id)
-                st.success(f"Saved a local review action for {item.id}. See the Review log tab.")
-            except (ValueError, OSError) as exc:
-                st.error(str(exc))
+        if PUBLIC_DEMO:
+            st.info("Review decisions are disabled in the public demonstration. Run locally to try the SQLite review log.")
+        else:
+            st.markdown("#### Draft review decision (local-only audit log)")
+            with st.form("review_form"):
+                reviewer = st.text_input("Reviewer name", placeholder="e.g. Demo Analyst")
+                decision = st.selectbox("Action", sorted(ACTIONS))
+                note = st.text_area("Reason / follow-up", placeholder="What evidence or clarification is required?")
+                submitted = st.form_submit_button("Record review decision")
+            if submitted:
+                try:
+                    add_decision(ROOT / ".local" / "reviews.db", item.id, decision, reviewer, note, workspace_id)
+                    st.success(f"Saved a local review action for {item.id}. See the Review log tab.")
+                except (ValueError, OSError) as exc:
+                    st.error(str(exc))
 
 with explore_tab:
     st.subheader("Ask the requirements")
     st.markdown("Retrieve the most relevant **current-version** requirements. Optionally use an LLM to draft a cited explanation.")
     q = st.text_input("Question", value="What changed in enhanced identity verification and what needs review?")
     k = st.slider("Maximum retrieved requirements", 1, 7, 4)
-    use_ai = st.checkbox("Generate AI-assisted answer (requires API key)", value=False)
+    use_ai = st.checkbox("Generate AI-assisted answer (requires API key)", value=False,
+                         disabled=PUBLIC_DEMO, help="Disabled in public demo mode." if PUBLIC_DEMO else None)
     if st.button("Search requirements", type="primary"):
         hits = search_requirements(q, new_requirements, top_k=k)
         if not hits:
@@ -195,11 +208,14 @@ with explore_tab:
 with review_tab:
     st.subheader("Human approval trail")
     st.caption("For local demonstration only. SQLite storage is not multi-user secure; do not deploy with real identities or private requirements.")
-    log = list_decisions(ROOT / ".local" / "reviews.db", workspace_id)
-    if log:
-        st.dataframe(pd.DataFrame(log), use_container_width=True, hide_index=True)
+    if PUBLIC_DEMO:
+        st.info("The public demo is read-only. Review decisions and the SQLite audit log are available only when running locally.")
     else:
-        st.info("No reviews logged yet. Go to Impact analyzer to record a decision.")
+        log = list_decisions(ROOT / ".local" / "reviews.db", workspace_id)
+        if log:
+            st.dataframe(pd.DataFrame(log), use_container_width=True, hide_index=True)
+        else:
+            st.info("No reviews logged yet. Go to Impact analyzer to record a decision.")
     st.markdown("**Future production requirements:** user authentication, access controls, versioned decisions, encryption, and review workflow isolation.")
 
 st.divider()
