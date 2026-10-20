@@ -1,7 +1,7 @@
 # 🧭 ChangePilot
 ### Requirements intelligence • change-impact analysis • evidence-driven handoff
 
-[**Launch the interactive demo ↗**](https://changepilot-app.streamlit.app/) · [Architecture](docs/ARCHITECTURE.md) · [Project brief](docs/PROJECT_BRIEF.md) · [Deployment](docs/DEPLOYMENT.md)
+[**Launch the interactive demo ↗**](https://changepilot-app.streamlit.app/) · [Case study](docs/CASE_STUDY.md) · [Architecture](docs/ARCHITECTURE.md) · [Project brief](docs/PROJECT_BRIEF.md) · [Deployment](docs/DEPLOYMENT.md)
 
 [![GitHub Actions](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml/badge.svg)](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml)
 
