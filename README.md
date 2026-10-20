@@ -4,7 +4,7 @@
 
 **[Try the ChangePilot Streamlit demo](https://changepilot-app.streamlit.app/)** · [Source code](https://github.com/dishap12/ChangePilot) · [Deployment guide](docs/DEPLOYMENT.md)
 
-[![ChangePilot checks](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml/badge.svg)](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml) · [CI results](https://github.com/dishap12/ChangePilot/actions) · [Deployment guide](docs/DEPLOYMENT.md)
+[![ChangePilot checks](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml/badge.svg)](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml) · [CI results](https://github.com/dishap12/ChangePilot/actions)
 
 > **Portfolio demo, not a bank product.** All included onboarding rules, teams, user stories and test cases are synthetic. Do not upload confidential employer materials.
 
