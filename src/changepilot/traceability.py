@@ -5,7 +5,11 @@ import re
 from .models import Change, TraceLink
 
 FIELDS = {"requirement_id", "system", "owner", "user_story", "test_case"}
-SENSITIVE_TERMS = {"identity", "risk", "consent", "audit", "retention", "fraud", "security", "verification", "accessibility"}
+# Transparent demonstration heuristics, not enterprise risk ratings.
+# Broad domain cues are shown as context; only selected control domains and
+# absent traceability elevate a change to the High review queue.
+HIGH_REVIEW_TERMS = {"identity", "risk", "consent", "fraud", "security", "privacy"}
+CONTEXT_TERMS = HIGH_REVIEW_TERMS | {"audit", "retention", "verification", "accessibility"}
 
 
 def load_traceability(csv_text: str) -> list[TraceLink]:
@@ -33,9 +37,10 @@ def triage_change(change: Change, links: list[TraceLink]) -> dict:
     """Rule-based review priority, NOT a predictive risk model."""
     linked = linked_items(change.id, links)
     words = set(re.findall(r"[a-z]+", f"{change.old_text} {change.new_text}".lower()))
-    sensitive = sorted(SENSITIVE_TERMS & words)
+    cues = sorted(CONTEXT_TERMS & words)
+    elevated = sorted(HIGH_REVIEW_TERMS & words)
     missing = not linked
-    priority = "High" if (sensitive or missing) else "Medium"
+    priority = "High" if (elevated or missing) else "Medium"
     if change.status == "Removed":
         questions = ["Does the retired requirement have a replacement?", "Which tests and controls should be retired or rewritten?"]
     elif change.status == "Added":
@@ -46,7 +51,8 @@ def triage_change(change: Change, links: list[TraceLink]) -> dict:
         questions.append("Traceability gap: assign a system, owner, user story, and test case.")
     return {
         "priority": priority,
-        "reason": ("Sensitive domain terms: " + ", ".join(sensitive) + ". " if sensitive else "") +
+        "reason": ("Review context: " + ", ".join(cues) + ". " if cues else "") +
+                  ("Elevated review cue(s): " + ", ".join(elevated) + ". " if elevated else "") +
                   ("No verified traceability links." if missing else f"{len(linked)} verified link(s) to review."),
         "links": linked,
         "questions": questions,
