@@ -1,40 +1,59 @@
-# Publish ChangePilot to a new GitHub account
+# Maintaining the ChangePilot GitHub repository
 
-You do not need a GitHub account to develop or run ChangePilot. Create it only when ready to publish your own tested work.
+The project already lives at **[dishap12/ChangePilot](https://github.com/dishap12/ChangePilot)**. You do not need to create a repository or run `git init` again.
 
-## Preparation
-1. Run the project locally using the root `README.md`.
-2. Personalize the documentation: what you built, what you measured, what worked and what did not.
-3. Never upload an `.env` with your API key. `.gitignore` excludes it by default.
-4. Add original screenshots, a short demo video, and a candid limitations section.
+## What is already configured
 
-## GitHub account and repository
-1. Create an account at https://github.com/signup and verify your email.
-2. Create a **new public repository** named `changepilot-requirements-intelligence`.
-3. Leave 'Add a README', `.gitignore`, and License **unchecked** when creating the empty repository, because these files already exist locally.
-4. Make sure Git is installed on your computer.
-5. In the unzipped `ChangePilot` folder, open Terminal / PowerShell:
+- `app.py`, the source modules, synthetic sample inputs, and unit tests.
+- `.gitignore` so local secrets, SQLite files, virtual environments, and caches are not committed accidentally.
+- `.env.example` with placeholder settings only.
+- `.streamlit/config.toml` for application theming and upload size.
+- `.github/workflows/tests.yml` for automated checks on push and pull request.
+- `docs/DEPLOYMENT.md` for a safe read-only public demo.
+
+[View GitHub Actions results](https://github.com/dishap12/ChangePilot/actions). A green check verifies tests on the configured synthetic fixtures, **not** production readiness.
+
+## Update your repository from your computer
+
+If you already have a local clone, open its folder and run:
 
 ```bash
-git init
+git pull origin main
+# Make your changes, run the tests, and check what's staged:
+python -m pytest -q
+git status
 git add .
-git commit -m "Build ChangePilot requirements intelligence MVP"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/changepilot-requirements-intelligence.git
-git push -u origin main
+git commit -m "Describe your changes"
+git push origin main
 ```
 
-Replace `YOUR_USERNAME` with your GitHub username. Sign in to GitHub when prompted using GitHub's recommended authentication method; a normal password may not work for pushing over HTTPS.
+If not, start with:
 
-## Portfolio polish after the first push
-- Record a 90-second screen capture showcasing REQ-005, REQ-012, retrieval evidence, and exports.
-- Update the README with your verified evaluation results and a screenshot.
-- Add a section on choices (why deterministic IDs and verified traceability instead of speculative AI links).
-- Add CI to run `python -m pytest -q` for every push.
-- Optionally deploy a **read-only** demo on Streamlit Community Cloud, with sensitive data and review logs removed/disabled first.
+```bash
+git clone https://github.com/dishap12/ChangePilot.git
+cd ChangePilot
+```
 
-## Suggested repository description
-> Requirements change-impact analysis with traceability, source-grounded retrieval, optional LLM assistance, and human review — Python, Streamlit, SQL-style SQLite audit, scikit-learn.
+Do not commit `.env`, `.streamlit/secrets.toml`, `.local/`, or confidential source documents. If you ever accidentally commit a credential, revoke and rotate it; merely deleting the file in a later commit will not remove it from history.
 
-## Suggested profile project pitch
-> Built ChangePilot, a local-first requirements intelligence tool to compare document versions, trace affected system components and tests, surface source-backed evidence, and generate draft analyst change tickets. Designed for human validation with transparent rules and a reproducible synthetic benchmark.
+## When preparing for recruiters
+
+1. Check that [CI tests](https://github.com/dishap12/ChangePilot/actions) are passing.
+2. Read the [deployment guide](DEPLOYMENT.md), set `CHANGEPILOT_PUBLIC_DEMO=true` in the hosting environment, and verify a live read-only sample walkthrough.
+3. Inspect the entire repository and its history for sensitive information **before** making it public.
+4. Make the repository public through its GitHub settings when ready. The connected GitHub app does not control repository visibility.
+5. Add **real** screenshots and a short screen-recorded demonstration. Do not fabricate screenshots or claim the optional AI feature was tested unless it was.
+6. Add the verified deployed link to the repository's About section and to the root README.
+7. Keep the README's limitations and clear synthetic-data labels. Showcase an engineering choice, its tests, and what you would improve.
+
+## Suggested portfolio description
+
+Requirements change-impact analysis with traceability, evidence retrieval, optional AI-assisted drafting, and human review. Built with Python, Streamlit, scikit-learn, and SQLite.
+
+## Suggested interview description
+
+I built a local-first requirements intelligence application that compares explicit requirement IDs across document versions, traces linked systems and tests from supplied mappings, and produces a human-reviewable change pack. I added automated tests and a reproducible small synthetic benchmark. The application also supports optional cited AI drafts locally; its hosted demo can be restricted to read-only fictional data.
+
+## Not part of this release
+
+Automated requirement extraction from arbitrary freeform documents, independent semantic dependency discovery, authenticated multi-user review, and actual cloud deployment are separate future milestones.
