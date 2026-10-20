@@ -2,6 +2,8 @@
 
 **A working, local-first business analysis portfolio application** for comparing requirements across versions, showing traceability to systems and tests, retrieving source evidence, and documenting human review decisions.
 
+[![ChangePilot checks](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml/badge.svg)](https://github.com/dishap12/ChangePilot/actions/workflows/tests.yml) · [CI results](https://github.com/dishap12/ChangePilot/actions) · [Deployment guide](docs/DEPLOYMENT.md)
+
 > **Portfolio demo, not a bank product.** All included onboarding rules, teams, user stories and test cases are synthetic. Do not upload confidential employer materials.
 
 ## The business problem
@@ -26,7 +28,14 @@ Changes in onboarding requirements frequently affect systems, acceptance criteri
 You **do not need GitHub, a paid API, or a database server** to run the baseline app.
 
 1. Install Python 3.10+ from https://www.python.org/downloads/ and open Terminal (Mac) or PowerShell (Windows).
-2. Unzip `ChangePilot.zip`. In the terminal, change into the `ChangePilot` folder.
+2. Clone this repository and open its folder:
+
+```bash
+git clone https://github.com/dishap12/ChangePilot.git
+cd ChangePilot
+```
+
+Or download **Code → Download ZIP** from GitHub, unzip it, and enter the repository folder.
 3. Create and activate a virtual environment:
 
 **Mac / Linux**
@@ -99,12 +108,24 @@ python scripts/evaluate.py
 
 The benchmark uses curated questions on a tiny **synthetic** dataset; it is a functionality check, not evidence of production accuracy.
 
+## GitHub checks and a safe public demo
+
+The [GitHub Actions workflow](.github/workflows/tests.yml) runs automated tests, the small synthetic benchmark, and syntax checks on pushes to `main` and pull requests across Python 3.11 and 3.12.
+
+For a shareable **read-only fictional-data demo**, set `CHANGEPILOT_PUBLIC_DEMO=true` in your hosting environment (on Streamlit Community Cloud, set it as a **root-level secret** in Advanced settings). Public demo mode disables uploaded documents, AI API calls, and SQLite review logging. Local mode still offers those features. The app is **not deployed automatically** and is not production-secure. Follow the [deployment guide](docs/DEPLOYMENT.md) and verify it before sharing a live URL.
+
+Do not commit `.env` or `.streamlit/secrets.toml`. The `.gitignore` file only protects future commits; it cannot erase previously committed secrets.
+
 ## Repo layout
 
 ```text
 ChangePilot/
 ├── app.py                       # Streamlit interface
 ├── requirements.txt
+├── .env.example                  # Example local configuration (no credentials)
+├── .gitignore                    # Ignore private keys, local files, virtualenvs
+├── .streamlit/config.toml        # Local UI and upload-size configuration
+├── .github/workflows/tests.yml   # CI tests on GitHub
 ├── data/                        # Synthetic sample requirements & verified links
 │   ├── onboarding_v1.md
 │   ├── onboarding_v2.md
@@ -113,6 +134,7 @@ ChangePilot/
 ├── tests/                       # Unit tests
 ├── scripts/evaluate.py          # Transparent demo benchmark
 ├── docs/ARCHITECTURE.md         # Data flow, design decisions, production gaps
+├── docs/DEPLOYMENT.md           # Local use, public-demo safety, deployment steps
 └── docs/PROJECT_BRIEF.md        # Stakeholders, acceptance criteria, demo walkthrough
 ```
 
