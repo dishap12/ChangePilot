@@ -50,7 +50,7 @@ st.markdown(
 :root { --ink: #18243d; --muted: #62718c; --blue: #5563d9; --border: #e2e8f3; }
 html, body, [class*="css"], .stApp { font-family: 'DM Sans', sans-serif; }
 .stApp { background: #f7f9fd; color: var(--ink); }
-.block-container { max-width: 1450px; padding-top: 1.45rem; padding-bottom: 3rem; }
+.block-container { max-width: 1450px; padding-top: 1.1rem; padding-bottom: 3rem; }
 [data-testid="stSidebar"] { background: #eff3fb; border-right: 1px solid #e1e6f2; }
 [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p { line-height: 1.55; }
 h1, h2, h3 { font-family: 'Manrope', sans-serif; letter-spacing: -.025em; color: #1c2945; }
@@ -60,17 +60,17 @@ p, li { line-height: 1.58; }
 .cp-brand-mark { background: linear-gradient(135deg,#5c62e8,#2589b0); padding: .25rem .5rem; border-radius: 12px; color: white; margin-right: .35rem; }
 .cp-subtitle { color: #61728f; font-size: .78rem; margin-bottom: 1.1rem; }
 .cp-hero { background: linear-gradient(115deg,#182c59 0%,#2b3675 55%,#4054a2 100%);
-           color: white; border-radius: 24px; padding: 2rem 2.25rem; margin-bottom: 1.3rem;
+           color: white; border-radius: 22px; padding: 1.45rem 2rem; margin-bottom: .9rem;
            box-shadow: 0 12px 34px rgba(31,55,109,.13); position: relative; overflow: hidden; }
 .cp-hero:after { content: ''; position: absolute; right: -60px; top: -110px;
                  width: 420px; height: 350px; border: 1px solid rgba(255,255,255,.15);
                  transform: rotate(-22deg); border-radius: 50%; pointer-events: none; }
 .cp-eyebrow { font-size: .69rem; font-weight: 800; letter-spacing: .16em; color: #bcd7ff;
               text-transform: uppercase; margin-bottom: .5rem; }
-.cp-hero h1 { color: #fff; margin: 0 0 .55rem; font-size: clamp(1.9rem,3.4vw,3rem);
+.cp-hero h1 { color: #fff; margin: 0 0 .45rem; font-size: clamp(1.9rem,3vw,2.65rem);
               font-weight: 800; line-height: 1.2; letter-spacing: -.045em; }
 .cp-hero p { color: #dce7ff; font-size: .99rem; max-width: 760px; margin: 0; }
-.cp-hero-pills { margin-top: 1.2rem; display: flex; flex-wrap: wrap; gap: .55rem; }
+.cp-hero-pills { margin-top: .8rem; display: flex; flex-wrap: wrap; gap: .5rem; }
 .cp-pill { display: inline-block; font-size: .74rem; color: #e8f2ff; border-radius: 30px;
            border: 1px solid rgba(255,255,255,.26); background: rgba(255,255,255,.09);
            padding: .3rem .7rem; }
@@ -94,8 +94,8 @@ p, li { line-height: 1.58; }
                              box-shadow: 0 4px 20px rgba(20,45,100,.045); }
 [data-testid="stMetricLabel"] p { color: #667691; font-size: .81rem; font-weight: 650; }
 [data-testid="stMetricValue"] { color: #273a69; font-family: 'Manrope',sans-serif; font-weight: 800; }
-.stTabs [data-baseweb="tab-list"] { gap: .28rem; border-bottom: 1px solid #e0e6f0; }
-.stTabs [data-baseweb="tab"] { border-radius: 10px 10px 0 0; padding: .8rem 1rem; font-weight: 700; font-size: .82rem; }
+.stTabs [data-baseweb="tab-list"] { gap: .55rem; border-bottom: 1px solid #e0e6f0; }
+.stTabs [data-baseweb="tab"] { border-radius: 10px 10px 0 0; padding: .75rem 1rem; font-weight: 700; font-size: .87rem; white-space: nowrap; }
 .stTabs [aria-selected="true"] { background: #e9edff; color: #424fbb; }
 div[data-testid="stVerticalBlockBorderWrapper"] > div { border-radius: 17px; }
 div[data-testid="stDataFrame"] { border: 1px solid #e1e7f2; border-radius: 12px; overflow: hidden; }
@@ -151,12 +151,12 @@ with st.sidebar:
             model = st.text_input("Generation model", value=os.getenv("OPENAI_MODEL", "gpt-4.1-mini"))
             st.caption("Explicit requests may send retrieved source excerpts to OpenAI and incur API charges.")
     st.divider()
-    st.markdown("**Workspace guide**")
-    st.caption("01 · Review change inventory")
-    st.caption("02 · Compare language")
-    st.caption("03 · Trace system & test impact")
-    st.caption("04 · Explore evidence and drafts")
-    st.caption("05 · Export an analyst review pack")
+    with st.expander("How to explore the demo", expanded=False):
+        st.caption("01 · Review change inventory")
+        st.caption("02 · Compare language")
+        st.caption("03 · Trace system & test impact")
+        st.caption("04 · Explore evidence and drafts")
+        st.caption("05 · Export an analyst review pack")
     st.divider()
     st.caption("Synthetic retail banking scenario · Not a banking product · Human approval required.")
 
@@ -204,11 +204,11 @@ m1, m2, m3, m4, m5 = st.columns(5)
 m1.metric("Added", counts["Added"])
 m2.metric("Modified", counts["Modified"])
 m3.metric("Removed", counts["Removed"])
-m4.metric("High-priority reviews", high_priority, help="Rule-based triage, not AI/compliance classification.")
+m4.metric("Elevated review flags", high_priority, help="Heuristic only: selected control terms or missing traceability. Not a validated risk or compliance score.")
 m5.metric("Unmapped changes", gaps)
 
 overview_tab, comparison_tab, map_tab, intelligence_tab, handoff_tab = st.tabs([
-    "◫ Command center", "⇄ Compare versions", "⬡ Impact map", "✳ Intelligence lab", "✓ Review & handoff"
+    "Command center", "Compare versions", "Impact map", "Intelligence lab", "Review & handoff"
 ])
 
 with overview_tab:
@@ -231,7 +231,7 @@ with overview_tab:
             st.caption(f"{gaps} changed requirements have no mapped dependencies. The application flags these as gaps, not as evidence of no impact.")
             st.progress((len(changed)-gaps)/len(changed) if changed else 1.0,
                         text="Change-level traceability coverage (demonstration only)")
-            st.info("Priority is generated from transparent keyword and missing-link rules. Every decision requires analyst validation.")
+            st.info("Elevated flags prioritize changes with missing links or selected control-domain terms. These are review cues, not validated risk scores.")
     st.markdown("#### Priority review queue")
     if changed:
         rows = []
