@@ -19,6 +19,6 @@ def test_app_starts_and_applies_demo_restrictions(monkeypatch, public_demo):
     # In the hosted public mode only fictional checked-in documents can be used.
     if public_demo:
         assert len(app.file_uploader) == 0
-        assert any("Public demo" in item.message for item in app.success)
+        assert any("Public demo" in item.value for item in app.success)
     else:
         assert len(app.file_uploader) == 3
