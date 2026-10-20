@@ -112,7 +112,7 @@ The benchmark uses curated questions on a tiny **synthetic** dataset; it is a fu
 
 The [GitHub Actions workflow](.github/workflows/tests.yml) runs automated tests, the small synthetic benchmark, and syntax checks on pushes to `main` and pull requests across Python 3.11 and 3.12.
 
-For a shareable **read-only fictional-data demo**, set `CHANGEPILOT_PUBLIC_DEMO=true` in your hosting environment (on Streamlit Community Cloud, set it as a **root-level secret** in Advanced settings). Public demo mode disables uploaded documents, AI API calls, and SQLite review logging. Local mode still offers those features. The app is **not deployed automatically** and is not production-secure. Follow the [deployment guide](docs/DEPLOYMENT.md) and verify it before sharing a live URL.
+For a shareable **read-only fictional-data demo**, deploy **`public_demo.py`** as the Streamlit Community Cloud main file (not the local `app.py`). It forces safe demo mode and disables uploads, AI API calls, and SQLite review logging. No hosting secrets are required. Local `app.py` still offers the complete feature set. The app is **not deployed automatically** and is not production-secure. Follow the [deployment guide](docs/DEPLOYMENT.md) and verify it before sharing a live URL.
 
 Do not commit `.env` or `.streamlit/secrets.toml`. The `.gitignore` file only protects future commits; it cannot erase previously committed secrets.
 
@@ -122,6 +122,7 @@ Do not commit `.env` or `.streamlit/secrets.toml`. The `.gitignore` file only pr
 ChangePilot/
 ├── app.py                       # Streamlit interface
 ├── requirements.txt
+├── public_demo.py                # Restricted entrypoint for public Streamlit hosting
 ├── .env.example                  # Example local configuration (no credentials)
 ├── .gitignore                    # Ignore private keys, local files, virtualenvs
 ├── .streamlit/config.toml        # Local UI and upload-size configuration
