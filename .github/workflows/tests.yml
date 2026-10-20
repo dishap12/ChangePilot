@@ -33,4 +33,4 @@ jobs:
       - name: Evaluate synthetic example
         run: python scripts/evaluate.py
       - name: Verify Python syntax
-        run: python -m compileall -q app.py src scripts
+        run: python -m compileall -q app.py public_demo.py src scripts
